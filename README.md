@@ -1,10 +1,10 @@
 # Scraping the Inflation
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/UK_and_US%2C_1990-Feb_2022.svg" height="200" align="right">
-
 This package helps to measure inflation in Spain, scraping various supermarkets websites, using [Puppeteer](https://www.npmjs.com/package/puppeteer).
 
 Also useful if you need data of thousands of products to practice or develop a personal project.
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/UK_and_US%2C_1990-Feb_2022.svg" height="300" align="right">
 
 Websites scraped:
 
