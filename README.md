@@ -1,8 +1,8 @@
 # Scraping the Inflation
 
-This package helps to measure inflation in Spain, scraping various supermarkets websites, using [Puppeteer](https://www.npmjs.com/package/puppeteer).
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/UK_and_US%2C_1990-Feb_2022.svg" height="200" align="right">
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/UK_and_US%2C_1990-Feb_2022.svg" height="300" align="right">
+This package helps to measure inflation in Spain, scraping various supermarkets websites, using [Puppeteer](https://www.npmjs.com/package/puppeteer).
 
 Also useful if you need data of thousands of products to practice or develop a personal project.
 
@@ -25,16 +25,16 @@ npm i scraping-inflation
 **Example**
 
 ```js
-const scraping = require("scraping");
+const scraping = require("scraping-inflation");
 
 scraping.mercadona(true, true, "28001").then((products) => {
     // Do something with products
 });
 
-async function getCarrefourProducts() {
+(async function getCarrefourProducts() {
     let products = await scraping.carrefour(false, false);
     // Do something with products
-}
+})();
 
 let diaProducts = scraping.dia(true, false);
 diaProducts.then((products) => {
@@ -42,6 +42,10 @@ diaProducts.then((products) => {
 });
 ```
 
-To run Chromium inn headless mode, set first argument to `true`.
+To run Chromium in headless mode, set first argument to `true`.
 
 To save products in .json file, set second argument to `true`.
+
+The progress of the scraping process will be shown in the STDOUT (console).
+
+The result of the scraping process is an array of JSON of all the products of the website.

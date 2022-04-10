@@ -15,8 +15,4 @@ class Scraping {
     }
 }
 
-/* module.exports = new Scraping(); */
-let scraping = new Scraping();
-//scraping.carrefour(true, true);
-scraping.mercadona(true, true, "08001");
-//scraping.dia(true, true);
+module.exports = new Scraping();
