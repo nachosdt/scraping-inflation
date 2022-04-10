@@ -6,11 +6,11 @@ let url = "https://tienda.mercadona.es/categories/112";
 /**
  * Scrapes the website and returns an array of products
  * @param {boolean} headless - Whether to run the browser in headless mode
- * @param {string} postalcode - Postal code to search
  * @param {boolean} saveFile - Whether to save the scraped data to a file named "mercadona.json"
- * @returns {Promise<Array>} - Array of products
+ * @param {string} postalcode - Postal code to search
+ * @returns {Promise<Array>} - Array of all Mercadona products
  * */
-async function scrap(headless, postalCode, saveFile) {
+async function scrap(headless, saveFile, postalCode) {
     // Get start time in miliseconds
     let startTime = new Date().getTime();
 
@@ -58,7 +58,7 @@ async function scrap(headless, postalCode, saveFile) {
         let category = await page.$eval(".category-menu__item.open", (cat) => {
             return cat.querySelector(".subhead1-r").textContent;
         });
-        console.log("\x1b[36m%s\x1b[0m", "Category:", category);
+        console.log("\x1b[32m%s\x1b[0m", "Category:", category);
         // Get all category products
         let categoryProducts = await getCategoryProducts(page, category);
         console.log(
@@ -86,12 +86,11 @@ async function getCategoryProducts(page, category) {
     let subcategory = await page.$eval(".category-item--selected", (subcat) => {
         return subcat.querySelector(".category-item__link").textContent;
     });
-    console.log("Subcategory:", subcategory);
+    console.log("\x1b[36m%s\x1b[0m", "Subcategory:", subcategory);
     // Get subcategory page products
     let products = await page.$$eval(".product-cell", (prod) => {
         let result = [];
         prod.forEach((e) => {
-            console.log(typeof e);
             let product = {
                 name: e.querySelector(".product-cell__description-name")
                     .textContent,
@@ -110,8 +109,6 @@ async function getCategoryProducts(page, category) {
         e.subcategory = subcategory;
     });
     console.log(products.length, "products found...");
-    //console.log(products);
-
     // Check if button .category-detail__next-subcategory exists
     let nextButtonExists = false;
     try {
@@ -146,7 +143,12 @@ async function getCategoryProducts(page, category) {
         ]);
         products = products.concat(await getCategoryProducts(page, category));
     } else {
-        console.log("\x1b[31m", "End of category", category, "reached...");
+        console.log(
+            "\x1b[32m%s\x1b[0m",
+            "End of category",
+            category,
+            "reached..."
+        );
     }
     return products;
 }

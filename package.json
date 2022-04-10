@@ -1,5 +1,34 @@
 {
-  "dependencies": {
-    "puppeteer": "^13.5.1"
-  }
+    "name": "scraping-inflation",
+    "version": "1.0.0",
+    "dependencies": {
+        "puppeteer": "^13.5.1"
+    },
+    "description": "This package helps to measure inflation in Spain, scraping various supermarkets websites, using [Puppeteer](https://www.npmjs.com/package/puppeteer).",
+    "main": "scraping.js",
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/nachosdt/scraping-inflation.git"
+    },
+    "keywords": [
+        "scraping",
+        "Puppeteer",
+        "inflation",
+        "product database",
+        "supermercados",
+        "almacenes",
+        "Día",
+        "Carrefour",
+        "Mercadona"
+    ],
+    "author": "Nacho Sáenz de Tejada",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/nachosdt/scraping-inflation/issues"
+    },
+    "homepage": "https://github.com/nachosdt/scraping-inflation#readme"
 }

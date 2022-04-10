@@ -7,7 +7,7 @@ let url = "https://www.carrefour.es/supermercado";
  * Scrapes the website and returns an array of products
  * @param {boolean} headless - Whether to run the browser in headless mode
  * @param {boolean} saveFile - Whether to save the scraped data to a file named "carrefour.json"
- * @returns {Promise<Array>} - Array of products
+ * @returns {Promise<Array>} - Array of all Carrefour products
  * */
 async function scrap(headless, saveFile) {
     // Get start time in miliseconds
@@ -202,7 +202,6 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
         });
         if (nextButton) {
             nextButtonExists = true;
-            // console.log("Next button found:", nextButton);
         }
     } catch (error) {
         nextButtonExists = false;
