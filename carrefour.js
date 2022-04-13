@@ -174,14 +174,22 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
                     name: e
                         .querySelector(".product-card__title-link")
                         ?.textContent.trim(),
-                    price: e
-                        .querySelector(".product-card__price")
-                        ?.textContent.trim(),
+                    price:
+                        e
+                            .querySelector(".product-card__price")
+                            ?.textContent.trim() ||
+                        e
+                            .querySelector(".product-card__price--current")
+                            ?.textContent.trim(),
                     img:
                         e.querySelector(".product-card__image")?.src[0] === "h"
                             ? e.querySelector(".product-card__image")?.src
                             : e.querySelector(".product-card__image")?.dataset
                                   .src,
+                    url: e.querySelector(".product-card__media-link")?.href,
+                    pricePerUnit: e
+                        .querySelector(".product-card__price-per-unit")
+                        .textContent.trim(),
                 });
             }
         });

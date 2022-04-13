@@ -208,7 +208,7 @@ async function getProducts(page) {
     let products = await page.$$eval(".product-list__item", (product) => {
         let result = [];
         product.forEach((e) => {
-            let productName = e.querySelector(".productMainLink").title;
+            let productName = e.querySelector(".productMainLink").title.trim();
             let productUrl = e.querySelector(".productMainLink").href;
             let productPrice = e
                 .querySelector(".productMainLink .price")
@@ -217,11 +217,23 @@ async function getProducts(page) {
             let productImage = e.querySelector(
                 ".productMainLink .crispImage"
             ).src;
+            let pricePerUnit = e
+                .querySelector(".pricePerKilogram")
+                .textContent.trim()
+                .replace("&nbsp;", " ");
+            // Get lowest price when we get 2 prices (2nd is the lowest)
+            productPrice = productPrice.replace(/\t/g, "");
+            productPrice.includes("\n") &&
+                (productPrice = productPrice.split("\n")[1]);
+            pricePerUnit = pricePerUnit.replace(/\t/g, "");
+            pricePerUnit.includes("\n") &&
+                (pricePerUnit = pricePerUnit.split("\n")[1]);
             result.push({
                 name: productName,
                 url: productUrl,
                 price: productPrice,
                 image: productImage,
+                pricePerUnit: pricePerUnit,
             });
         });
         return result;
