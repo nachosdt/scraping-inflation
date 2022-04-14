@@ -123,17 +123,28 @@ async function scrap(headless, saveFile) {
                     "Third level category:",
                     thirdLevelCategory
                 );
-                // Get products
-                let products = await getProducts(
-                    page,
-                    category,
-                    subcategory,
-                    thirdLevelCategory
-                );
-                console.log(products.length, "products found...");
-                /* console.log(products); */
-                totalSubcategoryProducts =
-                    totalSubcategoryProducts.concat(products);
+                if (
+                    !thirdLevelCategory.includes("Todos los") &&
+                    !thirdLevelCategory.includes("Todas las")
+                ) {
+                    // Get products
+                    let products = await getProducts(
+                        page,
+                        category,
+                        subcategory,
+                        thirdLevelCategory
+                    );
+                    console.log(products.length, "products found...");
+                    /* console.log(products); */
+                    totalSubcategoryProducts =
+                        totalSubcategoryProducts.concat(products);
+                } else {
+                    console.log(
+                        "\x1b[31m%s\x1b[0m",
+                        "Skip third level category",
+                        thirdLevelCategory
+                    );
+                }
             }
             console.log(
                 "\x1b[36m%s\x1b[0m",
@@ -199,6 +210,8 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
         e.category = category;
         e.subcategory = subcategory;
         e.thirdLevelCategory = thirdLevelCategory;
+        e.supermarket = "carrefour";
+        normalizeCategory(e);
     });
     // check if next-page button is enabled
     let nextButtonExists = false;
@@ -256,6 +269,17 @@ async function autoScroll(page) {
             }, 100);
         });
     });
+}
+
+// Normalize category of product
+function normalizeCategory(product) {
+    if (product.category === "La Despensa") {
+        product.category = "Despensa";
+    } else if (product.category === "Parafarmacia") {
+        product.category = "Perfumería e Higiene";
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = "Parafarmacia";
+    }
 }
 
 module.exports = { scrap };

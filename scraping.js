@@ -4,12 +4,31 @@ const dia = require("./dia");
 
 class Scraping {
     constructor() {}
-    mercadona(headless, postalCode, saveFile) {
+    /**
+     * Scrapes the website and returns an array of products
+     * @param {boolean} headless - Whether to run the browser in headless mode
+     * @param {boolean} saveFile - Whether to save the scraped data to a file named "mercadona.json"
+     * @param {string} postalcode - Postal code to search
+     * @returns {Promise<Array>} - Array of all Mercadona products
+     * */
+    mercadona(headless, saveFile, postalCode) {
         return mercadona.scrap(headless, postalCode, saveFile);
     }
+    /**
+     * Scrapes the website and returns an array of products
+     * @param {boolean} headless - Whether to run the browser in headless mode
+     * @param {boolean} saveFile - Whether to save the scraped data to a file named "carrefour.json"
+     * @returns {Promise<Array>} - Array of all Carrefour products
+     * */
     carrefour(headless, saveFile) {
         return carrefour.scrap(headless, saveFile);
     }
+    /**
+     * Scrapes the website and returns an array of products
+     * @param {boolean} headless - Whether to run the browser in headless mode
+     * @param {boolean} saveFile - Whether to save the scraped data to a file named "dia.json"
+     * @returns {Promise<Array>} - Array of all Día products
+     * */
     dia(headless, saveFile) {
         return dia.scrap(headless, saveFile);
     }

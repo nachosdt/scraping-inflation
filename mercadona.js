@@ -91,22 +91,30 @@ async function getCategoryProducts(page, category) {
     let products = await page.$$eval(".product-cell", (prod) => {
         let result = [];
         prod.forEach((e) => {
+            let format = e.querySelector(".product-format").textContent.trim();
             let product = {
-                name: e.querySelector(".product-cell__description-name")
-                    .textContent,
-                format: e.querySelector(".product-format").textContent,
-                price: e.querySelector(".product-price__unit-price")
-                    .textContent,
+                name:
+                    e
+                        .querySelector(".product-cell__description-name")
+                        .textContent.trim() +
+                    " " +
+                    format.toLowerCase(),
+                price: e
+                    .querySelector(".product-price__unit-price")
+                    .textContent.trim(),
                 img: e.querySelector(".product-cell__image-wrapper img").src,
             };
             result.push(product);
         });
         return result;
     });
-    // Add category and subcategory to products
+    // Add category, subcategory and third level category to products and normalize
     products.forEach((e) => {
         e.category = category;
         e.subcategory = subcategory;
+        e.thirdLevelCategory = "";
+        e.supermarket = "mercadona";
+        normalizeCategory(e);
     });
     console.log(products.length, "products found...");
     // Check if button .category-detail__next-subcategory exists
@@ -151,6 +159,56 @@ async function getCategoryProducts(page, category) {
         );
     }
     return products;
+}
+
+// Normalize category of product
+function normalizeCategory(product) {
+    if (
+        product.category === "Agua y refrescos" ||
+        product.category === "Bodega" ||
+        product.category === "Zumos"
+    ) {
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = product.category;
+        product.category = "Bebidas";
+    } else if (product.category === "Limpieza y hogar") {
+        product.category = "Limpieza y Hogar";
+    } else if (
+        product.category === "Aceite, especias y salsas" ||
+        product.category === "Aperitivos" ||
+        product.category === "Arroz, legumbres y pasta" ||
+        product.category === "Azucar, caramelos y chocolate" ||
+        product.category === "Cacao, café e infusiones" ||
+        product.category === "Cereales y galletas" ||
+        product.category === "Huevos, leche y mantequilla" ||
+        product.category === "Postres y yogures" ||
+        product.category === "Congelados" ||
+        product.category === "Pizzas y platos preparados" ||
+        product.category === "Conservas, caldos y cremas"
+    ) {
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = product.category;
+        product.category = "Despensa";
+    } else if (
+        product.category === "Carne" ||
+        product.category === "Marisco y pescado" ||
+        product.category === "Panadería y pastelería" ||
+        product.category === "Charcutería y quesos" ||
+        product.category === "Fruta y verdura"
+    ) {
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = product.category;
+        product.category = "Productos Frescos";
+    } else if (
+        product.category === "Cuidado del cabello" ||
+        product.category === "Cuidado facial y corporal" ||
+        product.category === "Fitoterapia y parafarmacia" ||
+        product.category === "Maquillaje"
+    ) {
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = product.category;
+        product.category = "Perfumería e Higiene";
+    }
 }
 
 module.exports = { scrap };

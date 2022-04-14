@@ -141,6 +141,7 @@ async function scrap(headless, saveFile) {
                         product.category = category.name;
                         product.subcategory = subcategory.name;
                         product.thirdLevelCategory = thirdLevelCategory.name;
+                        normalizeCategory(product);
                     });
                     subcategotyProducts = subcategotyProducts.concat(products);
                 }
@@ -164,6 +165,7 @@ async function scrap(headless, saveFile) {
                     product.category = category.name;
                     product.subcategory = subcategory.name;
                     product.thirdLevelCategory = "";
+                    normalizeCategory(product);
                 });
                 subcategotyProducts = subcategotyProducts.concat(products);
             }
@@ -234,6 +236,7 @@ async function getProducts(page) {
                 price: productPrice,
                 image: productImage,
                 pricePerUnit: pricePerUnit,
+                supermarket: "dia",
             });
         });
         return result;
@@ -275,6 +278,26 @@ function filterProducts(products) {
         }
     });
     return result;
+}
+
+// Normalize category of product
+function normalizeCategory(product) {
+    if (
+        product.category === "Platos Preparados" ||
+        product.category === "Congelados"
+    ) {
+        product.thirdLevelCategory = product.subcategory;
+        product.subcategory = product.category;
+        product.category = "Despensa";
+    } else if (product.category === "Cuidado del Hogar") {
+        product.category = "Limpieza y Hogar";
+    } else if (product.category === "Bodega") {
+        product.category = "Bebidas";
+    } else if (product.category === "Frescos") {
+        product.category = "Productos Frescos";
+    } else if (product.category === "Cuidado Personal") {
+        product.category = "Perfumería e Higiene";
+    }
 }
 
 module.exports = { scrap };
