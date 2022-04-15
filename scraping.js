@@ -8,7 +8,7 @@ class Scraping {
      * Scrapes the website and returns an array of products
      * @param {boolean} headless - Whether to run the browser in headless mode
      * @param {boolean} saveFile - Whether to save the scraped data to a file named "mercadona.json"
-     * @param {string} postalcode - Postal code to search
+     * @param {string} postalCode - Postal code to search
      * @returns {Promise<Array>} - Array of all Mercadona products
      * */
     mercadona(headless, saveFile, postalCode) {
