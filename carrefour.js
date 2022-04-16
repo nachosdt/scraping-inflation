@@ -182,7 +182,7 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
         prod.forEach((e) => {
             if (!e.classList.contains("trade-banner")) {
                 result.push({
-                    name: e
+                    description: e
                         .querySelector(".product-card__title-link")
                         ?.textContent.trim(),
                     price:
@@ -192,7 +192,7 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
                         e
                             .querySelector(".product-card__price--current")
                             ?.textContent.trim(),
-                    img:
+                    image:
                         e.querySelector(".product-card__image")?.src[0] === "h"
                             ? e.querySelector(".product-card__image")?.src
                             : e.querySelector(".product-card__image")?.dataset
@@ -209,8 +209,8 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
     products.forEach((e) => {
         e.category = category;
         e.subcategory = subcategory;
-        e.thirdLevelCategory = thirdLevelCategory;
-        e.supermarket = "carrefour";
+        e.class = thirdLevelCategory;
+        e.source = "carrefour";
         normalizeCategory(e);
     });
     // check if next-page button is enabled
@@ -277,7 +277,7 @@ function normalizeCategory(product) {
         product.category = "Despensa";
     } else if (product.category === "Parafarmacia") {
         product.category = "Perfumería e Higiene";
-        product.thirdLevelCategory = product.subcategory;
+        product.class = product.subcategory;
         product.subcategory = "Parafarmacia";
     }
 }

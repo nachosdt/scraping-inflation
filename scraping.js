@@ -12,7 +12,7 @@ class Scraping {
      * @returns {Promise<Array>} - Array of all Mercadona products
      * */
     mercadona(headless, saveFile, postalCode) {
-        return mercadona.scrap(headless, postalCode, saveFile);
+        return mercadona.scrap(headless, saveFile, postalCode);
     }
     /**
      * Scrapes the website and returns an array of products

@@ -140,7 +140,7 @@ async function scrap(headless, saveFile) {
                     products.forEach((product) => {
                         product.category = category.name;
                         product.subcategory = subcategory.name;
-                        product.thirdLevelCategory = thirdLevelCategory.name;
+                        product.class = thirdLevelCategory.name;
                         normalizeCategory(product);
                     });
                     subcategotyProducts = subcategotyProducts.concat(products);
@@ -164,7 +164,7 @@ async function scrap(headless, saveFile) {
                 products.forEach((product) => {
                     product.category = category.name;
                     product.subcategory = subcategory.name;
-                    product.thirdLevelCategory = "";
+                    product.class = "";
                     normalizeCategory(product);
                 });
                 subcategotyProducts = subcategotyProducts.concat(products);
@@ -191,7 +191,6 @@ async function scrap(headless, saveFile) {
         console.log(
             categoryProducts.length,
             "products found in category:",
-
             category.name
         );
         totalProducts = totalProducts.concat(categoryProducts);
@@ -216,9 +215,9 @@ async function getProducts(page) {
                 .querySelector(".productMainLink .price")
                 .textContent.trim()
                 .replace("&nbsp;", " ");
-            let productImage = e.querySelector(
-                ".productMainLink .crispImage"
-            ).src;
+            let productImage =
+                e.querySelector(".productMainLink .crispImage")?.src ||
+                e.querySelector(".productMainLink .missing-product-image")?.src;
             let pricePerUnit = e
                 .querySelector(".pricePerKilogram")
                 .textContent.trim()
@@ -231,12 +230,12 @@ async function getProducts(page) {
             pricePerUnit.includes("\n") &&
                 (pricePerUnit = pricePerUnit.split("\n")[1]);
             result.push({
-                name: productName,
+                description: productName,
                 url: productUrl,
                 price: productPrice,
                 image: productImage,
                 pricePerUnit: pricePerUnit,
-                supermarket: "dia",
+                source: "dia",
             });
         });
         return result;
@@ -286,7 +285,7 @@ function normalizeCategory(product) {
         product.category === "Platos Preparados" ||
         product.category === "Congelados"
     ) {
-        product.thirdLevelCategory = product.subcategory;
+        product.class = product.subcategory;
         product.subcategory = product.category;
         product.category = "Despensa";
     } else if (product.category === "Cuidado del Hogar") {
