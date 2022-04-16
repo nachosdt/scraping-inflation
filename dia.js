@@ -269,10 +269,10 @@ async function getProducts(page) {
 // Function to filter products and delete repeated products
 function filterProducts(products) {
     let result = [];
-    let productsNames = [];
+    let productsDescriptions = [];
     products.forEach((product) => {
-        if (!productsNames.includes(product.name)) {
-            productsNames.push(product.name);
+        if (!productsDescriptions.includes(product.description)) {
+            productsDescriptions.push(product.description);
             result.push(product);
         }
     });

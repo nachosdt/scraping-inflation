@@ -247,7 +247,7 @@ async function getProducts(page, category, subcategory, thirdLevelCategory) {
             "reached..."
         );
     }
-    return products;
+    return filterProducts(products);
 }
 
 async function autoScroll(page) {

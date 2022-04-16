@@ -160,7 +160,7 @@ async function getCategoryProducts(page, category) {
             "reached..."
         );
     }
-    return products;
+    return filterProducts(products);
 }
 
 // Normalize category of product
@@ -211,6 +211,19 @@ function normalizeCategory(product) {
         product.subcategory = product.category;
         product.category = "Perfumería e Higiene";
     }
+}
+
+// Function to filter products and delete repeated products
+function filterProducts(products) {
+    let result = [];
+    let productsDescriptions = [];
+    products.forEach((product) => {
+        if (!productsDescriptions.includes(product.description)) {
+            productsDescriptions.push(product.description);
+            result.push(product);
+        }
+    });
+    return result;
 }
 
 module.exports = { scrap };
