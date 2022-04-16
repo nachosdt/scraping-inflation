@@ -282,4 +282,17 @@ function normalizeCategory(product) {
     }
 }
 
+// Function to filter products and delete repeated products
+function filterProducts(products) {
+    let result = [];
+    let productsDescriptions = [];
+    products.forEach((product) => {
+        if (!productsDescriptions.includes(product.description)) {
+            productsDescriptions.push(product.description);
+            result.push(product);
+        }
+    });
+    return result;
+}
+
 module.exports = { scrap };
