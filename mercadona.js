@@ -78,7 +78,7 @@ async function scrap(headless, saveFile, postalCode) {
     let endTime = new Date().getTime();
     console.log("Total time:", (endTime - startTime) / 1000, "seconds");
     await browser.close();
-    return totalProducts;
+    return filterProducts(totalProducts);
 }
 
 async function getCategoryProducts(page, category) {

@@ -1,6 +1,6 @@
 {
     "name": "scraping-inflation",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "dependencies": {
         "puppeteer": "^13.5.1"
     },
