@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const { filterProducts } = require("./functions.js");
 
 let url = "https://www.dia.es/compra-online/";
 // body > div > div > span.Transparent-close
@@ -264,19 +265,6 @@ async function getProducts(page) {
         products = products.concat(await getProducts(page));
     }
     return filterProducts(products);
-}
-
-// Function to filter products and delete repeated products
-function filterProducts(products) {
-    let result = [];
-    let productsDescriptions = [];
-    products.forEach((product) => {
-        if (!productsDescriptions.includes(product.description)) {
-            productsDescriptions.push(product.description);
-            result.push(product);
-        }
-    });
-    return result;
 }
 
 // Normalize category of product

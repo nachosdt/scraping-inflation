@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const { filterProducts } = require("./functions.js");
 
 let url = "https://tienda.mercadona.es/categories/112";
 
@@ -211,19 +212,6 @@ function normalizeCategory(product) {
         product.subcategory = product.category;
         product.category = "Perfumería e Higiene";
     }
-}
-
-// Function to filter products and delete repeated products
-function filterProducts(products) {
-    let result = [];
-    let productsDescriptions = [];
-    products.forEach((product) => {
-        if (!productsDescriptions.includes(product.description)) {
-            productsDescriptions.push(product.description);
-            result.push(product);
-        }
-    });
-    return result;
 }
 
 module.exports = { scrap };
