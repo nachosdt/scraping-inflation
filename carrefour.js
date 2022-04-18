@@ -21,7 +21,7 @@ async function scrap(headless, saveFile) {
             "--disable-dev-shm-usage", // overcome limited resource problems
         ],
         defaultViewport: { width: 1620, height: 900 },
-        slowMo: 60,
+        slowMo: 70,
     });
     const page = await browser.newPage();
     console.log("Navigating to Carrefour URL:", url);
@@ -95,23 +95,25 @@ async function scrap(headless, saveFile) {
             let thirdLevelCategories = await page.$$eval(
                 ".nav-second-level-categories__slide",
                 (cat) => {
-                    return cat.map((e) => e.title);
+                    return cat.map((e) => {
+                        return {
+                            name: e.title,
+                            url: e.querySelector(
+                                ".nav-second-level-categories__list-element"
+                            ).href,
+                        };
+                    });
                 }
             );
             console.log(
                 thirdLevelCategories.length,
                 "third level categories found..."
             );
-            for (let l = 1; l <= thirdLevelCategories.length; l++) {
+            for (let l = 0; l < thirdLevelCategories.length; l++) {
                 // Select subcategory
-                await Promise.all([
-                    page.waitForNavigation({
-                        waitUntil: "networkidle2",
-                    }),
-                    page.click(
-                        `.nav-second-level-categories__slide:nth-child(${l})>a`
-                    ),
-                ]);
+                await page.goto(thirdLevelCategories[l].url, {
+                    waitUntil: "networkidle2",
+                });
                 // Get selected subcategory
                 let thirdLevelCategory = await page.$eval(
                     "a.nav-second-level-categories__list-element.ripple.active>p",
