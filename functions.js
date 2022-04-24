@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 // Function to filter products and delete repeated products
 function filterProducts(products) {
     let result = [];
@@ -32,4 +34,44 @@ function removeAccents(str) {
     return str;
 }
 
-module.exports = { filterProducts };
+class Log {
+    constructor(fileName, initialMessage = "") {
+        this.fileName = fileName + ".txt";
+        this.content = initialMessage + "\n\n";
+    }
+    writeToLog(message) {
+        this.content += message + "\n";
+    }
+    printLog() {
+        console.log(this.content);
+    }
+    saveLog() {
+        fs.writeFileSync(this.fileName, this.content, {
+            encoding: "utf8",
+        });
+    }
+}
+
+// Get today's date inj format YYYY-MM-DD
+function getTodayDate() {
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1;
+    let yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = "0" + dd;
+    }
+    if (mm < 10) {
+        mm = "0" + mm;
+    }
+    return yyyy + "-" + mm + "-" + dd;
+}
+
+function printOrSaveMessage(log, saveLog, color, ...message) {
+    if (saveLog) {
+        log.writeToLog(message.join(" "));
+    } else {
+        console.log(color, ...message);
+    }
+}
+module.exports = { filterProducts, Log, getTodayDate, printOrSaveMessage };

@@ -27,16 +27,16 @@ npm i scraping-inflation
 ```js
 const scraping = require("scraping-inflation");
 
-scraping.mercadona(true, true, "28001").then((products) => {
+scraping.mercadona(true, true, true, "28001").then((products) => {
     // Do something with products
 });
 
 (async function getCarrefourProducts() {
-    let products = await scraping.carrefour(false, false);
+    let products = await scraping.carrefour(false, false, true);
     // Do something with products
 })();
 
-let diaProducts = scraping.dia(true, false);
+let diaProducts = scraping.dia(true, false, false);
 diaProducts.then((products) => {
     // Do something with products
 });
@@ -46,7 +46,7 @@ To run Chromium in headless mode, set first argument to `true`.
 
 To save products in .json file, set second argument to `true`.
 
-The progress of the scraping process will be shown in the STDOUT (console).
+To save process log in a .txt file, set third argument to `true`, otherwise the progress of the scraping process will be printed in the STDOUT (console).
 
 **Result JSONs**
 
@@ -54,7 +54,7 @@ The result of the scraping process is an array of JSON of all the products of th
 
 The JSONs properties are:
 
-```js
+```
 {
     description: // { string } Product name and format
     source: // { string } "mercadona" || "carrefour" || "dia"

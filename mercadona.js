@@ -1,6 +1,11 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
-const { filterProducts } = require("./functions.js");
+const {
+    filterProducts,
+    Log,
+    getTodayDate,
+    printOrSaveMessage,
+} = require("./functions.js");
 
 let url = "https://tienda.mercadona.es/categories/112";
 
@@ -8,86 +13,155 @@ let url = "https://tienda.mercadona.es/categories/112";
  * Scrapes the website and returns an array of products
  * @param {boolean} headless - Whether to run the browser in headless mode
  * @param {boolean} saveFile - Whether to save the scraped data to a file named "mercadona.json"
+ * @param {boolean} saveLog - Whether to save the log messages to a .txt file or print them to the console
  * @param {string} postalCode - Postal code to search
  * @returns {Promise<Array>} - Array of all Mercadona products
  * */
-async function scrapingMercadona(headless, saveFile, postalCode) {
+async function scrapingMercadona(
+    headless = true,
+    saveFile = false,
+    saveLog = false,
+    postalCode = "28001"
+) {
     // Get start time in miliseconds
     let startTime = new Date().getTime();
-
-    const browser = await puppeteer.launch({
-        headless: headless,
-        args: [
-            "--start-maximized", // you can also use '--start-fullscreen'
-            "--disable-dev-shm-usage", // overcome limited resource problems
-        ],
-        defaultViewport: { width: 1620, height: 900 },
-        slowMo: 50,
-    });
-    const page = await browser.newPage();
-    console.log("Navigating to Mercadona URL:", url);
-    await page.goto(url, {
-        waitUntil: "networkidle2",
-    });
-    // Input postal code
-    await page.type("input.ym-hide-content", postalCode);
-    const [response] = await Promise.all([
-        page.waitForNavigation({
+    let today = getTodayDate();
+    let log = new Log("mercadona" + today, today);
+    try {
+        const browser = await puppeteer.launch({
+            headless: headless,
+            args: [
+                "--start-maximized", // you can also use '--start-fullscreen'
+                "--disable-dev-shm-usage", // overcome limited resource problems
+            ],
+            defaultViewport: { width: 1620, height: 900 },
+            slowMo: 50,
+        });
+        const page = await browser.newPage();
+        printOrSaveMessage(
+            log,
+            saveLog,
+            "",
+            "Navigating to Mercadona URL: " + url
+        );
+        await page.goto(url, {
             waitUntil: "networkidle2",
-        }),
-        page.click("button.button.button-primary.button-big"),
-    ]);
-    // Accept cookies
-    await page.click(
-        "div.cookie-banner>div>div>button.ui-button.ui-button--small.ui-button--primary.ui-button--positive"
-    );
-    // Find number of categories
-    let categories = await page.$$eval(".category-menu__item", (cat) => {
-        return cat.map((e) => e.querySelector(".subhead1-r").textContent);
-    });
-    console.log(categories.length, "categories found...");
-    let totalProducts = [];
-    for (let i = 1; i <= categories.length; i++) {
-        // Select category
-        await Promise.all([
+        });
+        // Input postal code
+        await page.type("input.ym-hide-content", postalCode);
+        const [response] = await Promise.all([
             page.waitForNavigation({
                 waitUntil: "networkidle2",
             }),
-            page.click(`.category-menu__item:nth-child(${i}) button`),
+            page.click("button.button.button-primary.button-big"),
         ]);
-        // Get selected category
-        let category = await page.$eval(".category-menu__item.open", (cat) => {
-            return cat.querySelector(".subhead1-r").textContent;
+        // Accept cookies
+        await page.click(
+            "div.cookie-banner>div>div>button.ui-button.ui-button--small.ui-button--primary.ui-button--positive"
+        );
+
+        // Find number of categories
+        let categories = await page.$$eval(".category-menu__item", (cat) => {
+            return cat.map((e) => e.querySelector(".subhead1-r").textContent);
         });
-        console.log("\x1b[32m%s\x1b[0m", "Category:", category);
-        // Get all category products
-        let categoryProducts = await getCategoryProducts(page, category);
-        console.log(
-            categoryProducts.length,
-            "products found in category",
-            category
+        printOrSaveMessage(
+            log,
+            saveLog,
+            "",
+            categories.length + " categories found..."
         );
-        totalProducts = totalProducts.concat(categoryProducts);
+        let totalProducts = [];
+        for (let i = 1; i <= categories.length; i++) {
+            // Select category
+            await Promise.all([
+                page.waitForNavigation({
+                    waitUntil: "networkidle2",
+                }),
+                page.click(`.category-menu__item:nth-child(${i}) button`),
+            ]);
+            // Get selected category
+            let category = await page.$eval(
+                ".category-menu__item.open",
+                (cat) => {
+                    return cat.querySelector(".subhead1-r").textContent;
+                }
+            );
+            printOrSaveMessage(
+                log,
+                saveLog,
+                "\x1b[32m%s\x1b[0m",
+                "Category:",
+                category
+            );
+            // Get all category products
+            let categoryProducts = await getCategoryProducts(
+                page,
+                category,
+                log,
+                saveLog
+            );
+            printOrSaveMessage(
+                log,
+                saveLog,
+                "",
+                categoryProducts.length,
+                "products found in category",
+                category
+            );
+            totalProducts = totalProducts.concat(categoryProducts);
+        }
+        printOrSaveMessage(
+            log,
+            saveLog,
+            "",
+            totalProducts.length,
+            "total products found..."
+        );
+        let uniqueProducts = filterProducts(totalProducts);
+        printOrSaveMessage(
+            log,
+            saveLog,
+            "",
+            uniqueProducts.length,
+            "unique products found..."
+        );
+        saveFile &&
+            fs.writeFileSync(
+                "mercadona" + today + ".json",
+                JSON.stringify(uniqueProducts, null, 4)
+            );
+        // Get end time in miliseconds
+        let endTime = new Date().getTime();
+        printOrSaveMessage(
+            log,
+            saveLog,
+            "",
+            "Total time:",
+            (endTime - startTime) / 1000,
+            "seconds"
+        );
+        saveLog && log.saveLog();
+        await browser.close();
+        return uniqueProducts;
+    } catch (error) {
+        printOrSaveMessage(log, saveLog, "", "Error: " + error);
+        saveLog && (log.saveLog(), console.log(error));
+        return error;
     }
-    console.log(totalProducts.length, "total products found...");
-    saveFile &&
-        fs.writeFileSync(
-            "mercadona.json",
-            JSON.stringify(totalProducts, null, 4)
-        );
-    // Get end time in miliseconds
-    let endTime = new Date().getTime();
-    console.log("Total time:", (endTime - startTime) / 1000, "seconds");
-    await browser.close();
-    return filterProducts(totalProducts);
 }
 
-async function getCategoryProducts(page, category) {
+async function getCategoryProducts(page, category, log, saveLog) {
     // Get selected subcategory
     let subcategory = await page.$eval(".category-item--selected", (subcat) => {
         return subcat.querySelector(".category-item__link").textContent;
     });
-    console.log("\x1b[36m%s\x1b[0m", "Subcategory:", subcategory);
+    printOrSaveMessage(
+        log,
+        saveLog,
+        "\x1b[36m%s\x1b[0m",
+        "Subcategory:",
+        subcategory
+    );
     // Get subcategory page products
     let products = await page.$$eval(".product-cell", (prod) => {
         let result = [];
@@ -119,7 +193,7 @@ async function getCategoryProducts(page, category) {
         e.pricePerUnit = "";
         normalizeCategory(e);
     });
-    console.log(products.length, "products found...");
+    printOrSaveMessage(log, saveLog, "", products.length, "products found...");
     // Check if button .category-detail__next-subcategory exists
     let nextButtonExists = false;
     try {
@@ -131,7 +205,6 @@ async function getCategoryProducts(page, category) {
         );
         if (nextButton) {
             nextButtonExists = true;
-            // console.log("Next button found:", nextButton);
         }
     } catch (error) {
         nextButtonExists = false;
@@ -152,16 +225,20 @@ async function getCategoryProducts(page, category) {
             }),
             page.click(".category-detail__next-subcategory"),
         ]);
-        products = products.concat(await getCategoryProducts(page, category));
+        products = products.concat(
+            await getCategoryProducts(page, category, log, saveLog)
+        );
     } else {
-        console.log(
+        printOrSaveMessage(
+            log,
+            saveLog,
             "\x1b[32m%s\x1b[0m",
             "End of category",
             category,
             "reached..."
         );
     }
-    return filterProducts(products);
+    return products;
 }
 
 // Normalize category of product
