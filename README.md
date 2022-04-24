@@ -54,16 +54,16 @@ The result of the scraping process is an array of JSON of all the products of th
 
 The JSONs properties are:
 
-```json
+```js
 {
-    description: { string } Product name and format
-    source: { string } "mercadona" || "carrefour" || "dia"
-    image: { string } Image URL
-    url: { string } Product details URL (if any)
-    category: { string } Product category
-    subcategory: { string } Product subcategory
-    class: { string } Product class or third level category
-    price: { string } Price in € (includes € symbol)
-    pricePerUnit: { string } Price per kilogram or litre (if any)
+    description: // { string } Product name and format
+    source: // { string } "mercadona" || "carrefour" || "dia"
+    image: // { string } Image URL
+    url: // { string } Product details URL (if any)
+    category: // { string } Product category
+    subcategory: // { string } Product subcategory
+    class: // { string } Product class or third level category
+    price: // { string } Price in € (includes € symbol)
+    pricePerUnit: // { string } Price per kilogram or litre (if any)
 }
 ```
