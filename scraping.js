@@ -37,6 +37,4 @@ class Scraping {
     }
 }
 
-/* module.exports = new Scraping(); */
-let scrap = new Scraping();
-scrap.carrefour(true, true, true);
+module.exports = new Scraping();
