@@ -11,7 +11,7 @@ let url = "https://tienda.mercadona.es/categories/112";
  * @param {string} postalCode - Postal code to search
  * @returns {Promise<Array>} - Array of all Mercadona products
  * */
-async function scrap(headless, saveFile, postalCode) {
+async function scrapingMercadona(headless, saveFile, postalCode) {
     // Get start time in miliseconds
     let startTime = new Date().getTime();
 
@@ -214,4 +214,4 @@ function normalizeCategory(product) {
     }
 }
 
-module.exports = { scrap };
+module.exports = { scrapingMercadona };

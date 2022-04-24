@@ -10,7 +10,7 @@ let url = "https://www.dia.es/compra-online/";
  * @param {boolean} saveFile - Whether to save the scraped data to a file named "dia.json"
  * @returns {Promise<Array>} - Array of all Día products
  * */
-async function scrap(headless, saveFile) {
+async function scrapingDia(headless, saveFile) {
     // Get start time in miliseconds
     let startTime = new Date().getTime();
 
@@ -287,4 +287,4 @@ function normalizeCategory(product) {
     }
 }
 
-module.exports = { scrap };
+module.exports = { scrapingDia };

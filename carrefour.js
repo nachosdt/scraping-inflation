@@ -10,7 +10,7 @@ let url = "https://www.carrefour.es/supermercado";
  * @param {boolean} saveFile - Whether to save the scraped data to a file named "carrefour.json"
  * @returns {Promise<Array>} - Array of all Carrefour products
  * */
-async function scrap(headless, saveFile) {
+async function scrapingCarrefour(headless, saveFile) {
     // Get start time in miliseconds
     let startTime = new Date().getTime();
 
@@ -285,4 +285,4 @@ function normalizeCategory(product) {
     }
 }
 
-module.exports = { scrap };
+module.exports = { scrapingCarrefour };
