@@ -25,20 +25,7 @@ function removeAccents(str) {
         /[\331-\334]/g,
         /[\371-\374]/g, // U, u
     ];
-    let noaccents = [
-        "A",
-        "a",
-        "E",
-        "e",
-        "I",
-        "i",
-        "O",
-        "o",
-        "U",
-        "u",
-        "C",
-        "c",
-    ];
+    let noaccents = ["A", "a", "E", "e", "I", "i", "O", "o", "U", "u"];
     for (let i = 0; i < accents.length; i++) {
         str = str.replace(accents[i], noaccents[i]);
     }

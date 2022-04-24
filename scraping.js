@@ -1,6 +1,6 @@
-const mercadona = require("./mercadona");
-const carrefour = require("./carrefour");
-const dia = require("./dia");
+const { scrapingMercadona } = require("./mercadona");
+const { scrapingCarrefour } = require("./carrefour");
+const { scrapingDia } = require("./dia");
 
 class Scraping {
     constructor() {}
@@ -12,7 +12,7 @@ class Scraping {
      * @returns {Promise<Array>} - Array of all Mercadona products
      * */
     mercadona(headless, saveFile, postalCode) {
-        return mercadona.scrap(headless, saveFile, postalCode);
+        return scrapingMercadona(headless, saveFile, postalCode);
     }
     /**
      * Scrapes the website and returns an array of products
@@ -21,7 +21,7 @@ class Scraping {
      * @returns {Promise<Array>} - Array of all Carrefour products
      * */
     carrefour(headless, saveFile) {
-        return carrefour.scrap(headless, saveFile);
+        return scrapingCarrefour(headless, saveFile);
     }
     /**
      * Scrapes the website and returns an array of products
@@ -30,10 +30,8 @@ class Scraping {
      * @returns {Promise<Array>} - Array of all Día products
      * */
     dia(headless, saveFile) {
-        return dia.scrap(headless, saveFile);
+        return scrapingDia(headless, saveFile);
     }
 }
 
-/* module.exports = new Scraping(); */
-let scrap = new Scraping();
-scrap.carrefour(true, true);
+module.exports = new Scraping();
